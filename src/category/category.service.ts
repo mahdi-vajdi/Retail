@@ -23,8 +23,8 @@ export class CategoryService {
     return foundCategories;
   }
 
-  findOne(id: string) {
-    const foundCategory = this.categoryModel.findById(id).exec();
+  async findOne(id: string) {
+    const foundCategory = await this.categoryModel.findById(id).exec();
     if (!foundCategory)
       throw new NotFoundException(
         `Could not find any category mathcing the id: ${id}`,
@@ -32,15 +32,25 @@ export class CategoryService {
     return foundCategory;
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
     const updatedCategory = await this.categoryModel.findByIdAndUpdate(
       id,
       updateCategoryDto,
       { returnDocument: 'after' },
     );
+    if (!updatedCategory)
+      throw new NotFoundException(
+        `Could not find any category mathcing the id: ${id}`,
+      );
+    return updatedCategory;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: string) {
+    const deletedCategory = await this.categoryModel.findByIdAndDelete(id);
+    if (!deletedCategory)
+      throw new NotFoundException(
+        `Could not find any category mathcing the id: ${id}`,
+      );
+    return deletedCategory;
   }
 }
