@@ -4,10 +4,12 @@ import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { jwtConstants } from './constants';
 import { JwtModule } from '@nestjs/jwt';
+import { ProfileModule } from 'src/profile/profile.module';
 
 @Module({
   imports: [
     UsersModule,
+    ProfileModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
