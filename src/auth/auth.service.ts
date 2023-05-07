@@ -24,7 +24,22 @@ export class AuthService {
     if (!isMatch) throw new UnauthorizedException();
 
     const payload = { phone: user.phone, sub: user.id, isAdmin: user.isAdmin };
-    return { acces_token: await this.jwtService.signAsync(payload) };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+      refresh_token: await this.jwtService.signAsync(payload, {
+        expiresIn: '7d',
+      }),
+    };
+  }
+
+  async refresh(refreshToken: string) {
+    const isValid = await this.jwtService.verifyAsync(refreshToken);
+    if (!isValid) throw new UnauthorizedException();
+
+    const payload = this.jwtService.decode(refreshToken);
+    delete payload['exp'] && delete payload['iat'];
+
+    return await this.jwtService.signAsync(payload);
   }
 
   async hashPass(password: string) {

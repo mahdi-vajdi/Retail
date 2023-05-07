@@ -13,7 +13,7 @@ import { ProfileModule } from 'src/profile/profile.module';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '2h' },
     }),
   ],
   controllers: [AuthController],
