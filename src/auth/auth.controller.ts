@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { AuthGuard } from './auth.gaurd';
-import { RefreshTokenDto } from './dto/refresh.dto';
+import { RefreshTokenDto } from './dto/refreshToken.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +29,6 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @UseGuards(AuthGuard)
   refresh(@Body() { refresh_token }: RefreshTokenDto) {
     const accessToken = this.authService.refresh(refresh_token);
     return accessToken;

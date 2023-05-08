@@ -20,10 +20,9 @@ export class AuthService {
     const user = await this.usersService.findSingleUser(phone);
 
     const isMatch = await bcrypt.compare(pass, user.password);
-
     if (!isMatch) throw new UnauthorizedException();
 
-    const payload = { phone: user.phone, sub: user.id, isAdmin: user.isAdmin };
+    const payload = { phone: user.phone, sub: user.id };
     return {
       access_token: await this.jwtService.signAsync(payload),
       refresh_token: await this.jwtService.signAsync(payload, {
