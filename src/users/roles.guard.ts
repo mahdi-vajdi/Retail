@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserRoles } from './roles/roles.enum';
+import { Role } from './roles/roles.enum';
 import { ROLES_KEY } from './roles/roles.decorator';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -22,11 +22,10 @@ export class RolesGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     // Get the required roles from the decorator
-    const requiredRoles = this.reflector.getAllAndOverride<UserRoles[]>(
-      ROLES_KEY,
-      [context.getHandler(), context.getClass()],
-    );
-    console.log('Required Roles: ', requiredRoles);
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     if (!requiredRoles || !requiredRoles.length) return true;
 
     // Get the token
