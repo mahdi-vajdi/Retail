@@ -13,6 +13,8 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ParseObjectId } from 'src/common/parseObjectId.pipe';
+import { Roles } from 'src/users/roles/roles.decorator';
+import { UserRoles } from 'src/users/roles/roles.enum';
 
 @Controller('products')
 export class ProductController {
@@ -20,6 +22,7 @@ export class ProductController {
 
   @Post()
   @UsePipes(ValidationPipe)
+  @Roles(UserRoles.MANAGER, UserRoles.ADMIN)
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
@@ -35,6 +38,7 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @Roles(UserRoles.MANAGER, UserRoles.ADMIN)
   update(
     @Param('id', ParseObjectId) id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -43,6 +47,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @Roles(UserRoles.MANAGER, UserRoles.ADMIN)
   remove(@Param('id', ParseObjectId) id: string) {
     return this.productService.remove(id);
   }
