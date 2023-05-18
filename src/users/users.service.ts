@@ -51,14 +51,4 @@ export class UsersService {
 
     return user;
   }
-
-  async updateAdminState(id: string, isAdmin: boolean) {
-    const user = await this.userModel.findByIdAndUpdate(
-      id,
-      { isAdmin },
-      { returnDocument: 'after' },
-    );
-
-    return user;
-  }
 }
