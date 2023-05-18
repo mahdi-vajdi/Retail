@@ -6,8 +6,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import { SigninDto } from './dto/signin.dto';
+import { SignupDto } from './dto/signup.dto';
 import { RefreshTokenDto } from './dto/refreshToken.dto';
 import { Serialize } from 'src/common/serialize.interceptor';
 import { UserDto } from 'src/users/dto/user.dto';
@@ -19,13 +19,13 @@ export class AuthController {
   @Serialize(UserDto)
   @Post('register')
   @UsePipes(ValidationPipe)
-  signup(@Body() registerDto: RegisterDto) {
+  signup(@Body() registerDto: SignupDto) {
     return this.authService.signup(registerDto);
   }
 
   @Post('login')
   @UsePipes(ValidationPipe)
-  signIn(@Body() signInDto: LoginDto) {
+  signIn(@Body() signInDto: SigninDto) {
     return this.authService.signin(signInDto.phone, signInDto.password);
   }
 

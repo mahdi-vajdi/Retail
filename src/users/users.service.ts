@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { RegisterDto } from 'src/auth/dto/register.dto';
+import { SignupDto } from 'src/auth/dto/signup.dto';
 import { ProfileService } from 'src/profile/profile.service';
 import { CreateProfileDto } from 'src/profile/dto/create-profile.dto';
 
@@ -13,7 +13,7 @@ export class UsersService {
     private profileService: ProfileService,
   ) {}
 
-  async create(registerDto: RegisterDto) {
+  async create(registerDto: SignupDto) {
     const duplicate = await this.findOne(registerDto.phone);
     if (duplicate) throw new ConflictException();
 
