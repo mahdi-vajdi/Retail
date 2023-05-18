@@ -19,19 +19,19 @@ export class AuthController {
   @Serialize(UserDto)
   @Post('register')
   @UsePipes(ValidationPipe)
-  register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  signup(@Body() registerDto: RegisterDto) {
+    return this.authService.signup(registerDto);
   }
 
   @Post('login')
   @UsePipes(ValidationPipe)
   signIn(@Body() signInDto: LoginDto) {
-    return this.authService.login(signInDto.phone, signInDto.password);
+    return this.authService.signin(signInDto.phone, signInDto.password);
   }
 
   @Post('refresh')
-  refresh(@Body() { refresh_token }: RefreshTokenDto) {
-    const accessToken = this.authService.refresh(refresh_token);
+  refreshToken(@Body() { refresh_token }: RefreshTokenDto) {
+    const accessToken = this.authService.refreshToken(refresh_token);
     return accessToken;
   }
 }

@@ -13,8 +13,8 @@ export class UsersService {
     private profileService: ProfileService,
   ) {}
 
-  async createUser(registerDto: RegisterDto) {
-    const duplicate = await this.findSingleUser(registerDto.phone);
+  async create(registerDto: RegisterDto) {
+    const duplicate = await this.findOne(registerDto.phone);
     if (duplicate) throw new ConflictException();
 
     const createdUser = await this.userModel.create(registerDto);
@@ -26,7 +26,7 @@ export class UsersService {
     return createdUser;
   }
 
-  async findSingleUser(phone: string) {
+  async findOne(phone: string) {
     const foundUser = await this.userModel.findOne({ phone }).exec();
     if (!foundUser) console.log('no user');
     return foundUser;

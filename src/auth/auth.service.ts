@@ -11,13 +11,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDto) {
-    const createdUser = this.usersService.createUser(registerDto);
+  async signup(registerDto: RegisterDto) {
+    const createdUser = this.usersService.create(registerDto);
     return createdUser;
   }
 
-  async login(phone: string, pass: string) {
-    const user = await this.usersService.findSingleUser(phone);
+  async signin(phone: string, pass: string) {
+    const user = await this.usersService.findOne(phone);
 
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) throw new UnauthorizedException();
@@ -31,7 +31,7 @@ export class AuthService {
     };
   }
 
-  async refresh(refreshToken: string) {
+  async refreshToken(refreshToken: string) {
     const isValid = await this.jwtService.verifyAsync(refreshToken);
     if (!isValid) throw new UnauthorizedException();
 
@@ -39,11 +39,5 @@ export class AuthService {
     delete payload['exp'] && delete payload['iat'];
 
     return await this.jwtService.signAsync(payload);
-  }
-
-  async hashPass(password: string) {
-    const saltRounds = 10;
-    const hash = await bcrypt.hash(password, saltRounds);
-    return hash;
   }
 }
