@@ -11,8 +11,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(registerDto: SignupDto) {
-    const createdUser = this.usersService.create(registerDto);
+  async signup(signupDto: SignupDto) {
+    const createdUser = this.usersService.create(signupDto);
     return createdUser;
   }
 
