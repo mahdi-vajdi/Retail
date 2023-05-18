@@ -14,14 +14,14 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ParseObjectId } from 'src/common/parseObjectId.pipe';
 import { Role } from 'src/users/roles/roles.enum';
-import { Role } from 'src/users/roles/roles.decorator';
+import { Roles } from 'src/users/roles/roles.decorator';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  @Role(Role.MANAGER, Role.ADMIN)
+  @Roles(Role.MANAGER, Role.ADMIN)
   @UsePipes(ValidationPipe)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -38,7 +38,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
-  @Role(Role.MANAGER, Role.ADMIN)
+  @Roles(Role.MANAGER, Role.ADMIN)
   update(
     @Param('id', ParseObjectId) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -47,7 +47,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  @Role(Role.MANAGER, Role.ADMIN)
+  @Roles(Role.MANAGER, Role.ADMIN)
   remove(@Param('id', ParseObjectId) id: string) {
     return this.categoryService.remove(id);
   }

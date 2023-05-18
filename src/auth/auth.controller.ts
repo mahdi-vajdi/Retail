@@ -9,11 +9,14 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenDto } from './dto/refreshToken.dto';
+import { Serialize } from 'src/common/serialize.interceptor';
+import { UserDto } from 'src/users/dto/user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Serialize(UserDto)
   @Post('register')
   @UsePipes(ValidationPipe)
   register(@Body() registerDto: RegisterDto) {

@@ -15,7 +15,7 @@ export class UsersService {
 
   async createUser(registerDto: RegisterDto) {
     const duplicate = await this.findSingleUser(registerDto.phone);
-    if (duplicate) return new ConflictException();
+    if (duplicate) throw new ConflictException();
 
     const createdUser = await this.userModel.create(registerDto);
     // Create profile for the user
