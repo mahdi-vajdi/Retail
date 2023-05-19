@@ -30,8 +30,8 @@ export class AuthController {
   }
 
   @Post('refresh')
-  refreshToken(@Body() { refresh_token }: RefreshTokenDto) {
-    const accessToken = this.authService.refreshToken(refresh_token);
-    return accessToken;
+  async refreshToken(@Body() { refresh_token }: RefreshTokenDto) {
+    const accessToken = await this.authService.refreshToken(refresh_token);
+    return { access_token: accessToken };
   }
 }

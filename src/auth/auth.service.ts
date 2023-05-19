@@ -1,8 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { SignupDto } from './dto/signup.dto';
+import { JwtPayload } from './jwt/jwt.interface';
+import { JwtType } from './jwt/jwt.enum';
 
 @Injectable()
 export class AuthService {
@@ -22,22 +28,34 @@ export class AuthService {
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) throw new UnauthorizedException();
 
-    const payload = { phone: user.phone, sub: user.id };
     return {
-      access_token: await this.jwtService.signAsync(payload),
-      refresh_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '7d',
-      }),
+      access_token: this.jwtService.sign(
+        { id: user.id, token_type: JwtType.ACCESS },
+        { expiresIn: '2h' },
+      ),
+      refresh_token: this.jwtService.sign(
+        { id: user.id, token_type: JwtType.REFRESH },
+        { expiresIn: '7d' },
+      ),
     };
   }
 
   async refreshToken(refreshToken: string) {
-    const isValid = await this.jwtService.verifyAsync(refreshToken);
-    if (!isValid) throw new UnauthorizedException();
+    let tokenPayload: JwtPayload;
 
-    const payload = this.jwtService.decode(refreshToken);
-    delete payload['exp'] && delete payload['iat'];
+    try {
+      tokenPayload = this.jwtService.verify(refreshToken);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
 
-    return await this.jwtService.signAsync(payload);
+    // validate the payload
+    if (!tokenPayload) throw new UnauthorizedException();
+    if (tokenPayload.token_type !== JwtType.REFRESH)
+      throw new BadRequestException('The type of token is not refresh');
+
+    const payload = { id: tokenPayload.id, token_type: JwtType.ACCESS };
+
+    return this.jwtService.sign(payload);
   }
 }

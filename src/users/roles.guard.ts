@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -11,6 +12,8 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
+import { JwtPayload } from 'src/auth/jwt/jwt.interface';
+import { JwtType } from 'src/auth/jwt/jwt.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -33,17 +36,19 @@ export class RolesGuard implements CanActivate {
     const token = request.headers.authorization?.split('Bearer ')[1];
     if (!token) throw new UnauthorizedException();
 
-    let payload;
+    let payload: JwtPayload;
 
     try {
-      payload = await this.jwtService.verifyAsync(token);
-    } catch {
-      throw new UnauthorizedException();
+      payload = this.jwtService.verify(token);
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
 
-    const user = await this.userModel.findById(payload['sub']);
+    if (payload.token_type != JwtType.ACCESS)
+      throw new BadRequestException('The provided token is not type access');
+
+    const user = await this.userModel.findById(payload.id);
     if (!user) return false;
-    console.log('user roles: ', user.roles);
     return requiredRoles.some((role) => user.roles.includes(role));
   }
 }
