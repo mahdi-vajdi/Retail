@@ -6,17 +6,17 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from './roles/roles.enum';
-import { ROLES_KEY } from './roles/roles.decorator';
+import { Role } from '../users/roles/roles.enum';
+import { ROLES_KEY } from '../users/roles/roles.decorator';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
+import { User } from '../users/schemas/user.schema';
 import { Model } from 'mongoose';
 import { JwtPayload } from 'src/auth/jwt/jwt.interface';
 import { JwtType } from 'src/auth/jwt/jwt.enum';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private jwtService: JwtService,
