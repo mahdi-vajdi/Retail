@@ -10,13 +10,13 @@ import { SigninDto } from './dto/signin.dto';
 import { SignupDto } from './dto/signup.dto';
 import { RefreshTokenDto } from './dto/refreshToken.dto';
 import { Serialize } from 'src/common/serialize.interceptor';
-import { UserDto } from 'src/users/dto/user.dto';
+import { UserResponseDto } from 'src/users/dto/user-response.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Serialize(UserDto)
+  @Serialize(UserResponseDto)
   @Post('register')
   @UsePipes(ValidationPipe)
   signup(@Body() registerDto: SignupDto) {

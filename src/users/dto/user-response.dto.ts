@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { Role } from '../roles/roles.enum';
 
-export class UserDto {
+export class UserResponseDto {
   @Expose()
   phone: string;
 

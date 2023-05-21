@@ -16,34 +16,32 @@ export class ProfileService {
     return createdProfile;
   }
 
-  async findOne(id: string) {
-    const foundProfile = await this.profileModel.findById(id).exec();
+  async findOne(userId: string) {
+    const foundProfile = await this.profileModel.findOne({ user: userId });
     if (!foundProfile)
-      throw new NotFoundException(
-        `Could not find any Profile mathcing the id: ${id}`,
-      );
+      throw new NotFoundException(`Could not find any Profile for the user`);
     return foundProfile;
   }
 
-  async update(id: string, updateProfileDto: UpdateProfileDto) {
-    const updatedProfile = await this.profileModel.findByIdAndUpdate(
-      id,
+  async update(userId: string, updateProfileDto: UpdateProfileDto) {
+    const updatedProfile = await this.profileModel.findOneAndUpdate(
+      {
+        user: userId,
+      },
       updateProfileDto,
       { returnDocument: 'after' },
     );
     if (!updatedProfile)
-      throw new NotFoundException(
-        `Could not find any profile mathcing the id: ${id}`,
-      );
+      throw new NotFoundException(`Could not find any profile for ther user`);
     return updatedProfile;
   }
 
-  async remove(id: number) {
-    const deletedProfile = await this.profileModel.findByIdAndDelete(id);
+  async remove(userId: string) {
+    const deletedProfile = await this.profileModel.findOneAndUpdate({
+      user: userId,
+    });
     if (!deletedProfile)
-      throw new NotFoundException(
-        `Could not find any profile mathcing the id: ${id}`,
-      );
+      throw new NotFoundException(`There was no profile for the user`);
     return deletedProfile;
   }
 }

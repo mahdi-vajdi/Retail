@@ -12,7 +12,7 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ default: Role.CUSToMER })
+  @Prop({ default: Role.CUSTOMER })
   roles: Role[];
 }
 

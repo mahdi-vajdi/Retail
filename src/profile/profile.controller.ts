@@ -1,22 +1,23 @@
-import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
+import { Controller, Get, Body, Patch } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Roles } from 'src/users/roles/roles.decorator';
 import { Role } from 'src/users/roles/roles.enum';
+import { UserId } from '../users/decorators/userId.decorator';
 
 @Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
-  @Get(':id')
-  @Roles(Role.MANAGER, Role.ADMIN)
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(id);
+  @Get()
+  @Roles(Role.MANAGER, Role.ADMIN, Role.CUSTOMER)
+  async findOne(@UserId() userId: string) {
+    return this.profileService.findOne(userId);
   }
 
-  @Patch(':id')
+  @Patch()
   @Roles(Role.MANAGER, Role.ADMIN)
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update(id, updateProfileDto);
+  update(@UserId() userId: string, @Body() updateProfileDto: UpdateProfileDto) {
+    return this.profileService.update(userId, updateProfileDto);
   }
 }
