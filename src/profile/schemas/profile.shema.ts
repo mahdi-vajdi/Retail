@@ -1,6 +1,7 @@
-import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from 'src/users/schemas/user.schema';
+import { Address } from '../dto/address.dto';
 
 export type ProfileDocument = HydratedDocument<Profile>;
 
@@ -18,22 +19,8 @@ export class Profile {
   @Prop({ default: '' })
   email: string;
 
-  @Prop(
-    raw({
-      country: { type: String, default: '' },
-      city: { type: String, default: '' },
-      street: { type: String, default: '' },
-      number: { type: String, default: '' },
-      zip: { type: String, default: '' },
-    }),
-  )
-  adresses: {
-    country: string;
-    city: string;
-    street: string;
-    number: string;
-    zip: string;
-  }[];
+  @Prop([Address])
+  adresses: Address[];
 }
 
 export const profileSchema = SchemaFactory.createForClass(Profile);

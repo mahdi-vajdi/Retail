@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './schemas/profile.shema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { User } from '../users/schemas/user.schema';
 
 @Injectable()
 export class ProfileService {
@@ -11,9 +11,8 @@ export class ProfileService {
     @InjectModel(Profile.name) private profileModel: Model<Profile>,
   ) {}
 
-  async create(createProfileDto: CreateProfileDto) {
-    const createdProfile = await this.profileModel.create(createProfileDto);
-    return createdProfile;
+  async create(user: User) {
+    return this.profileModel.create({ user });
   }
 
   async findOne(userId: string) {

@@ -16,7 +16,7 @@ export class ProfileController {
   }
 
   @Patch()
-  @Roles(Role.MANAGER, Role.ADMIN)
+  @Roles(Role.MANAGER, Role.ADMIN, Role.CUSTOMER)
   update(@UserId() userId: string, @Body() updateProfileDto: UpdateProfileDto) {
     return this.profileService.update(userId, updateProfileDto);
   }

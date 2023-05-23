@@ -1,10 +1,7 @@
 import { IsArray, IsEmail, IsOptional, IsString } from 'class-validator';
-import { last } from 'rxjs';
+import { Address } from './address.dto';
 
 export class CreateProfileDto {
-  @IsString()
-  user: string;
-
   @IsString()
   @IsOptional()
   firstname: string;
@@ -19,16 +16,5 @@ export class CreateProfileDto {
   email: string;
 
   @IsArray()
-  @IsOptional()
-  adresses: {
-    country: string;
-    city: string;
-    street: string;
-    number: string;
-    zip: string;
-  }[];
-
-  constructor(user: string) {
-    this.user = user;
-  }
+  addresses: Address[];
 }

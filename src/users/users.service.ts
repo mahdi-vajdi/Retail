@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { SignupDto } from 'src/auth/dto/signup.dto';
 import { ProfileService } from 'src/profile/profile.service';
-import { CreateProfileDto } from 'src/profile/dto/create-profile.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -24,9 +23,7 @@ export class UsersService {
 
     const createdUser = await this.userModel.create(signupDto);
     // Create profile for the user
-    const newProfile = new CreateProfileDto(createdUser.id);
-    console.log(createdUser.id);
-    await this.profileService.create(newProfile);
+    await this.profileService.create(createdUser);
 
     return createdUser;
   }
