@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class Address {
+export class CreateAddressDto {
   @IsString()
   @IsNotEmpty()
   country: string;

@@ -1,10 +1,9 @@
-import { IsArray, IsEmail, IsOptional, IsString } from 'class-validator';
-import { Address } from './address.dto';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class CreateProfileDto {
   @IsString()
   @IsOptional()
-  firstname: string;
+  firstName: string;
 
   @IsString()
   @IsOptional()
@@ -14,7 +13,4 @@ export class CreateProfileDto {
   @IsEmail()
   @IsOptional()
   email: string;
-
-  @IsArray()
-  addresses: Address[];
 }
