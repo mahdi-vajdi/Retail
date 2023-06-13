@@ -20,8 +20,7 @@ export class Order {
 
   @Prop({
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Address',
+    type: Address,
   })
   shippingAddress: Address;
 
@@ -34,7 +33,7 @@ export class Order {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: mongoose.Schema.Types.Date })
   dateOrderd: Date;
 }
 
