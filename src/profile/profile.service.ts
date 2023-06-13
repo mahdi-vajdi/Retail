@@ -18,17 +18,17 @@ export class ProfileService {
     return this.profileModel.create({ user });
   }
 
-  async findOne(userId: string) {
-    const foundProfile = await this.profileModel.findOne({ user: userId });
+  async findOne(user: User) {
+    const foundProfile = await this.profileModel.findOne({ user: user });
     if (!foundProfile)
       throw new NotFoundException(`Could not find any Profile for the user`);
     return foundProfile;
   }
 
-  async update(userId: string, updateProfileDto: UpdateProfileDto) {
+  async update(user: User, updateProfileDto: UpdateProfileDto) {
     const updatedProfile = await this.profileModel.findOneAndUpdate(
       {
-        user: userId,
+        user: user,
       },
       updateProfileDto,
       { returnDocument: 'after' },
@@ -38,9 +38,9 @@ export class ProfileService {
     return updatedProfile;
   }
 
-  async remove(userId: string) {
+  async remove(user: User) {
     const deletedProfile = await this.profileModel.findOneAndUpdate({
-      user: userId,
+      user: user,
     });
     if (!deletedProfile)
       throw new NotFoundException(`There was no profile for the user`);
@@ -49,43 +49,43 @@ export class ProfileService {
 
   // Address related function
 
-  async addAddresses(userId: string, dto: CreateAddressDto) {
-    const user = await this.profileModel.findOne({ user: userId });
-    if (!user) return null;
+  async addAddresses(user: User, dto: CreateAddressDto) {
+    const foundUser = await this.profileModel.findOne({ user: user });
+    if (!foundUser) return null;
 
-    user.addresses.push(dto);
-    await user.save();
+    foundUser.addresses.push(dto);
+    await foundUser.save();
   }
 
-  async findAddresses(userId: string) {
-    const user = await this.findOne(userId);
-    if (!user) return null;
+  async findAddresses(user: User) {
+    const foundUser = await this.findOne(user);
+    if (!foundUser) return null;
 
-    return user.addresses;
+    return foundUser.addresses;
   }
 
-  async updateOneAddress(userId: string, updateAddressDto: UpdateAddressDto) {
-    const user = await this.findOne(userId);
-    if (!user) return null;
+  async updateOneAddress(user: User, updateAddressDto: UpdateAddressDto) {
+    const foundUser = await this.findOne(user);
+    if (!foundUser) return null;
 
-    const index = user.addresses.findIndex((obj: Address) => {
+    const index = foundUser.addresses.findIndex((obj: Address) => {
       return obj.id === updateAddressDto.addressId;
     });
     if (!index) return null;
 
-    user.addresses[index] = updateAddressDto;
-    user.save();
+    foundUser.addresses[index] = updateAddressDto;
+    foundUser.save();
   }
 
-  async removeAddress(userId: string, addressId: string) {
-    const user = await this.findOne(userId);
-    if (!user) return null;
+  async removeAddress(user: User, addressId: string) {
+    const foundUser = await this.findOne(user);
+    if (!foundUser) return null;
 
-    const pos = user.addresses.findIndex((el) => el.id === addressId);
-    if (pos >= 0) user.addresses.splice(pos, 1);
+    const pos = foundUser.addresses.findIndex((el) => el.id === addressId);
+    if (pos >= 0) foundUser.addresses.splice(pos, 1);
 
-    console.log(user.addresses);
+    console.log(foundUser.addresses);
 
-    user.save();
+    foundUser.save();
   }
 }
