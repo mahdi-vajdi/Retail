@@ -70,7 +70,7 @@ export class OrderController {
     const removedOrder = await this.orderService.cancel(user, id);
     if (!removedOrder)
       throw new NotFoundException(
-        `Could not find an order with the id ${id} for the user`,
+        `Could not find an order with th id ${id} for the user`,
       );
     return removedOrder;
   }
