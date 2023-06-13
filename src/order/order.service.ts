@@ -17,25 +17,31 @@ export class OrderService {
     return order.save();
   }
 
-  async findAll(user: User) {
-    return await this.productModel.find({ user: user.id }).exec();
+  findAll(user: User) {
+    return this.productModel.find({ user: user.id }).exec();
   }
 
-  async findOne(user: User, id: number) {
-    return await this.productModel.findOne({ user: user.id, _id: id });
+  findOne(user: User, id: string) {
+    return this.productModel.findOne({ user: user.id, _id: id });
   }
 
-  async update(user: User, id: number, updateOrderDto: UpdateOrderDto) {
-    return await this.productModel.findOneAndUpdate(
-      { user: user.id, _id: id },
-      updateOrderDto,
-    );
+  update(user: User, id: string, updateOrderDto: UpdateOrderDto) {
+    return this.productModel
+      .findOneAndUpdate({ user: user.id, _id: id }, updateOrderDto, {
+        returnDocument: 'after',
+      })
+      .exec();
   }
 
-  async cancel(user: User, id: number) {
-    return await this.productModel.findOne(
-      { user: user.id, _id: id },
-      { status: OrderStatus.CANCELED },
-    );
+  cancel(user: User, id: string) {
+    return this.productModel
+      .findOneAndUpdate(
+        { user: user.id, _id: id },
+        { status: OrderStatus.CANCELED },
+        {
+          returnDocument: 'after',
+        },
+      )
+      .exec();
   }
 }

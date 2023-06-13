@@ -29,15 +29,15 @@ export class OrderController {
   @Roles(Role.CUSTOMER)
   async findAll(@UserDec() user: User) {
     const foundOrders = await this.orderService.findAll(user);
-    if (!foundOrders)
+    if (!foundOrders || !foundOrders.length)
       throw new NotFoundException('Could not find any orders for the user');
     return foundOrders;
   }
 
   @Get(':id')
   @Roles(Role.CUSTOMER)
-  findOne(@UserDec() user: User, @Param('id') id: string) {
-    const foundOrder = this.orderService.findOne(user, +id);
+  async findOne(@UserDec() user: User, @Param('id') id: string) {
+    const foundOrder = await this.orderService.findOne(user, id);
     if (!foundOrder)
       throw new NotFoundException(
         `Could not find an order with the id ${id} for the user`,
@@ -47,12 +47,16 @@ export class OrderController {
 
   @Patch(':id')
   @Roles(Role.CUSTOMER)
-  update(
+  async update(
     @UserDec() user: User,
     @Param('id') id: string,
     @Body() updateOrderDto: UpdateOrderDto,
   ) {
-    const updatedOrder = this.orderService.update(user, +id, updateOrderDto);
+    const updatedOrder = await this.orderService.update(
+      user,
+      id,
+      updateOrderDto,
+    );
     if (!updatedOrder)
       throw new NotFoundException(
         `Could not find an order with the id ${id} for the user`,
@@ -62,8 +66,8 @@ export class OrderController {
 
   @Patch('cancel/:id')
   @Roles(Role.CUSTOMER)
-  remove(@UserDec() user: User, @Param('id') id: string) {
-    const removedOrder = this.orderService.cancel(user, +id);
+  async remove(@UserDec() user: User, @Param('id') id: string) {
+    const removedOrder = await this.orderService.cancel(user, id);
     if (!removedOrder)
       throw new NotFoundException(
         `Could not find an order with the id ${id} for the user`,
