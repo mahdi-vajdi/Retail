@@ -6,27 +6,27 @@ import {
   Patch,
   Param,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { Role } from '../users/roles/roles.enum';
-import { Roles } from '../users/roles/roles.decorator';
 import { User } from '../users/schemas/user.schema';
 import { UserDec } from '../users/decorators/userId.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  @Roles(Role.CUSTOMER)
+  @UseGuards(JwtAuthGuard)
   create(@UserDec() user: User, @Body() createOrderDto: CreateOrderDto) {
     return this.orderService.create(user, createOrderDto);
   }
 
   @Get()
-  @Roles(Role.CUSTOMER)
+  @UseGuards(JwtAuthGuard)
   async findAll(@UserDec() user: User) {
     const foundOrders = await this.orderService.findAll(user);
     if (!foundOrders || !foundOrders.length)
@@ -35,7 +35,7 @@ export class OrderController {
   }
 
   @Get(':id')
-  @Roles(Role.CUSTOMER)
+  @UseGuards(JwtAuthGuard)
   async findOne(@UserDec() user: User, @Param('id') id: string) {
     const foundOrder = await this.orderService.findOne(user, id);
     if (!foundOrder)
@@ -46,7 +46,7 @@ export class OrderController {
   }
 
   @Patch(':id')
-  @Roles(Role.CUSTOMER)
+  @UseGuards(JwtAuthGuard)
   async update(
     @UserDec() user: User,
     @Param('id') id: string,
@@ -65,7 +65,7 @@ export class OrderController {
   }
 
   @Patch('cancel/:id')
-  @Roles(Role.CUSTOMER)
+  @UseGuards(JwtAuthGuard)
   async remove(@UserDec() user: User, @Param('id') id: string) {
     const removedOrder = await this.orderService.cancel(user, id);
     if (!removedOrder)

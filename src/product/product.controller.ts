@@ -8,13 +8,13 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ParseObjectId } from 'src/common/parseObjectId.pipe';
-import { Role } from 'src/users/roles/roles.enum';
-import { Roles } from 'src/users/roles/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('products')
 export class ProductController {
@@ -22,7 +22,7 @@ export class ProductController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
@@ -38,7 +38,7 @@ export class ProductController {
   }
 
   @Patch(':id')
-  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id', ParseObjectId) id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -47,7 +47,7 @@ export class ProductController {
   }
 
   @Delete(':id')
-  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id', ParseObjectId) id: string) {
     return this.productService.remove(id);
   }

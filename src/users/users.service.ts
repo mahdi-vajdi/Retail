@@ -29,9 +29,7 @@ export class UsersService {
   }
 
   async findOne(phone: string) {
-    const foundUser = await this.userModel.findOne({ phone }).exec();
-    if (!foundUser) console.log('no user');
-    return foundUser;
+    return this.userModel.findOne({ phone }).exec();
   }
 
   async updatePhone(id: string, phone: string) {

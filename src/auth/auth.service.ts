@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { SignupDto } from './dto/signup.dto';
 import { JwtPayload } from './jwt/jwt.interface';
 import { JwtType } from './jwt/jwt.enum';
+import { User } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -22,22 +23,22 @@ export class AuthService {
     return createdUser;
   }
 
-  async signin(phone: string, pass: string) {
-    const user = await this.usersService.findOne(phone);
-
-    const isMatch = await bcrypt.compare(pass, user.password);
-    if (!isMatch) throw new UnauthorizedException();
+  signin(user: User): { access_token: string } {
+    const payload = {
+      phone: user.phone,
+      sub: user.id,
+    };
 
     return {
-      access_token: this.jwtService.sign(
-        { id: user.id, token_type: JwtType.ACCESS },
-        { expiresIn: '2h' },
-      ),
-      refresh_token: this.jwtService.sign(
-        { id: user.id, token_type: JwtType.REFRESH },
-        { expiresIn: '7d' },
-      ),
+      access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
     };
+  }
+
+  async verify(token: string): Promise<User> {
+    const decoded = this.jwtService.verify(token);
+    const user = this.usersService.findOne(decoded.phone);
+    if (!user) throw new Error('Unable to get the user from decoded token');
+    return user;
   }
 
   async refreshToken(refreshToken: string) {
@@ -57,5 +58,13 @@ export class AuthService {
     const payload = { id: tokenPayload.id, token_type: JwtType.ACCESS };
 
     return this.jwtService.sign(payload);
+  }
+
+  async validate(phone: string, password: string): Promise<User> | null {
+    const user = await this.usersService.findOne(phone);
+    if (!user) return null;
+
+    const passwordIsValid = await bcrypt.compare(password, user.password);
+    return passwordIsValid ? user : null;
   }
 }

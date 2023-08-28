@@ -8,20 +8,20 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ParseObjectId } from 'src/common/parseObjectId.pipe';
-import { Role } from 'src/users/roles/roles.enum';
-import { Roles } from 'src/users/roles/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
@@ -38,7 +38,7 @@ export class CategoryController {
   }
 
   @Patch(':id')
-  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id', ParseObjectId) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -47,7 +47,7 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  @Roles(Role.MANAGER, Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id', ParseObjectId) id: string) {
     return this.categoryService.remove(id);
   }
